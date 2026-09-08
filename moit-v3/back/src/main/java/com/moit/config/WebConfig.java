@@ -22,10 +22,10 @@ public class WebConfig implements WebMvcConfigurer{
 	    
 	    // 문의 이미지
 	    registry.addResourceHandler("/images/qna/**")
-	            .addResourceLocations("file:///C:/upload/qna/");
+	            .addResourceLocations("file:" + resourcePath + "/qna/");
 	    
 	    // 광고 이미지
 	    registry.addResourceHandler("/upload/ad/**")
-        		.addResourceLocations("file:///C:/upload/ad/");
+        		.addResourceLocations("file:" + resourcePath + "/ad/");
 	}
 }

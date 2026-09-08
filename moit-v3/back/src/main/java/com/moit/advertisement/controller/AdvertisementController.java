@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -59,7 +60,8 @@ public class AdvertisementController {
     private final TossPaymentService tossPaymentService;
 //    private final AdvertisementPaymentRepository advertisementPaymentRepository;
 
-    private static final String UPLOAD_PATH = "C:/upload/ad/";
+    @Value("${resource.path}")
+    private String resourcePath;
     
     
     // 사용자 id
@@ -142,11 +144,14 @@ public class AdvertisementController {
             // 이미지 등록
             if (imageFiles != null && imageTypes != null) {
 
-                File dir = new File(UPLOAD_PATH);
+            	File dir = new File(resourcePath, "ad");
 
-                if (!dir.exists()) {
-                    dir.mkdirs();
-                }
+            	if (!dir.exists() && !dir.mkdirs()) {
+            	    throw new IllegalStateException(
+            	            "광고 이미지 업로드 폴더 생성에 실패했습니다: "
+            	            + dir.getAbsolutePath()
+            	    );
+            	}
 
                 for (int i = 0; i < imageFiles.size(); i++) {
 

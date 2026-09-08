@@ -19,6 +19,7 @@ import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -97,7 +98,8 @@ public class AdvertisementServiceImpl implements AdvertisementService {
     private final MailService mailService;
     private final AdvertisementAiSummaryRepository aiSummaryRepository;
 
-    private static final String UPLOAD_PATH = "C:/upload/ad";
+    @Value("${resource.path}")
+    private String resourcePath;
 
     // =========================================================
     // 관리자 탭별 전용 구현 메서드
@@ -758,15 +760,14 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 	             );
 	         }
 	
-	         File directory = new File(UPLOAD_PATH);
-	
-	         if (!directory.exists()
-	                 && !directory.mkdirs()) {
-	
-	             throw new IllegalStateException(
-	                     "이미지 저장 폴더를 생성할 수 없습니다."
-	             );
-	         }
+	         File directory = new File(resourcePath, "ad");
+
+                 if (!directory.exists() && !directory.mkdirs()) {
+                    throw new IllegalStateException(
+                        "광고 이미지 업로드 폴더 생성에 실패했습니다: "
+                        + directory.getAbsolutePath()
+                    );
+                 }
 	
 	         for (int i = 0; i < imageFiles.size(); i++) {
 	
@@ -871,13 +872,21 @@ public class AdvertisementServiceImpl implements AdvertisementService {
         if (imageUrl == null || imageUrl.isBlank()) {
             return;
         }
-
+        
         String fileName = new File(imageUrl).getName();
 
-        File file = new File(UPLOAD_PATH, fileName);
+        File file = new File(
+                resourcePath + "/ad",
+                fileName
+        );
 
         if (file.exists()) {
-            file.delete();
+                if (!file.delete()) {
+	                log.warn(
+	                        "광고 이미지 파일 삭제 실패: {}",
+	                        file.getAbsolutePath()
+	                );
+                }
         }
     }
 
@@ -2779,12 +2788,17 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
             File file =
                     new File(
-                            UPLOAD_PATH,
+                            resourcePath + "/ad",
                             fileName
                     );
 
             if (file.exists()) {
-                file.delete();
+                if (!file.delete()) {
+                        log.warn(
+                                "광고 이미지 삭제 실패: {}",
+                                file.getAbsolutePath()
+                        );
+                }
             }
         }
     }
