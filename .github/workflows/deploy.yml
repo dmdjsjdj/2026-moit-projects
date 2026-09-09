@@ -117,7 +117,7 @@ jobs:
           echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/moit.pem
           chmod 600 ~/.ssh/moit.pem
 
-          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+          touch ~/.ssh/known_hosts
 
       # -------------------------
       # EC2 배포 디렉터리 생성
@@ -125,6 +125,7 @@ jobs:
       - name: Prepare EC2
         run: |
           ssh -i ~/.ssh/moit.pem \
+            -o StrictHostKeyChecking=no \
             ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} \
             "mkdir -p ~/moit-deploy/backend ~/moit-deploy/frontend"
 
@@ -134,6 +135,7 @@ jobs:
       - name: Upload backend
         run: |
           scp -i ~/.ssh/moit.pem \
+            -o StrictHostKeyChecking=no \
             deploy/backend/back-0.0.1-SNAPSHOT.jar \
             ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:~/moit-deploy/backend/
 
@@ -142,7 +144,9 @@ jobs:
       # -------------------------
       - name: Upload frontend
         run: |
-          scp -i ~/.ssh/moit.pem -r \
+          scp -i ~/.ssh/moit.pem \
+            -o StrictHostKeyChecking=no \
+            -r \
             deploy/frontend/. \
             ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:~/moit-deploy/frontend/
 
@@ -152,6 +156,7 @@ jobs:
       - name: Deploy to EC2
         run: |
           ssh -i ~/.ssh/moit.pem \
+            -o StrictHostKeyChecking=no \
             ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} << 'EOF'
 
           set -e
