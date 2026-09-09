@@ -74,7 +74,6 @@ jobs:
 
       - name: Package frontend
         run: |
-          cd moit-v3/front
           tar -czf ../../frontend.tar.gz \
             .next \
             public \
@@ -203,10 +202,6 @@ jobs:
           rm -rf .next
 
           tar -xzf ~/moit-deploy/frontend.tar.gz -C .
-
-          npm ci --omit=dev --legacy-peer-deps
-
-          nohup npm start > next.log 2>&1 &
 
           npm ci --omit=dev --legacy-peer-deps
 
