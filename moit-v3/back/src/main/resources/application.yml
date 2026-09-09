@@ -48,6 +48,7 @@ logging:
   level:
     org.hibernate: info
     org.springframework: info
+    org.springframework.security: DEBUG
     com.the703: debug
 
 # 업로드 경로 설정 - 두 파일 방식이 다름
