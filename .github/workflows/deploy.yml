@@ -72,16 +72,20 @@ jobs:
           NEXT_PUBLIC_API_BASE_URL: https://moit-j.duckdns.org
         run: npm run build
 
-      - name: Upload frontend build
+      - name: Package frontend
+        run: |
+          cd moit-v3/front
+          tar -czf ../../frontend.tar.gz \
+            .next \
+            public \
+            package.json \
+            package-lock.json
+
+      - name: Upload frontend artifact
         uses: actions/upload-artifact@v4
         with:
           name: frontend-build
-          path: |
-            moit-v3/front/.next
-            moit-v3/front/public
-            moit-v3/front/package.json
-            moit-v3/front/package-lock.json
-
+          path: frontend.tar.gz
 
   # =========================
   # AWS EC2 Deploy
@@ -105,7 +109,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: frontend-build
-          path: deploy/frontend
+          path: deploy
 
       # -------------------------
       # SSH 설정
@@ -144,11 +148,11 @@ jobs:
       # -------------------------
       - name: Upload frontend
         run: |
-          scp -i ~/.ssh/moit.pem \
+          scp \
+            -i ~/.ssh/moit.pem \
             -o StrictHostKeyChecking=no \
-            -r \
-            deploy/frontend/. \
-            ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:~/moit-deploy/frontend/
+            deploy/frontend.tar.gz \
+            ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:~/moit-deploy/
 
       # -------------------------
       # EC2 배포
@@ -198,13 +202,11 @@ jobs:
 
           rm -rf .next
 
-          cp -r ~/moit-deploy/frontend/.next .
+          tar -xzf ~/moit-deploy/frontend.tar.gz -C .
 
-          cp -r ~/moit-deploy/frontend/public .
+          npm ci --omit=dev --legacy-peer-deps
 
-          cp ~/moit-deploy/frontend/package.json .
-
-          cp ~/moit-deploy/frontend/package-lock.json .
+          nohup npm start > next.log 2>&1 &
 
           npm ci --omit=dev --legacy-peer-deps
 
