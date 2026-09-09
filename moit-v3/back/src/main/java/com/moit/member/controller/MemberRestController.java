@@ -193,7 +193,7 @@ public class MemberRestController {
 
 	    // 7. Refresh Token 발급
 	    String refreshToken = jwtTokenProvider.createRefreshToken(memberId);
-
+	    
 	    // 8. Redis에 Refresh Token 저장
 	    refreshTokenService.saveRefreshToken(
 	            memberId,
@@ -204,7 +204,7 @@ public class MemberRestController {
 
 	    // 9. 소셜 회원가입용 세션 삭제
 	    session.removeAttribute("socialUser");
-
+	    
 	    // 10. 응답
 	    return ResponseEntity.ok(
 	            new LoginResponseDto(
@@ -402,7 +402,10 @@ public class MemberRestController {
 		 // =========================================================
 		 // 로그인 기기 저장
 		 // =========================================================
-	
+
+		    
+	    log.info("LOGIN STEP 1 - 새 기기 알림 처리 완료");
+		 
 		 loginDeviceService.saveLoginDevice(
 		         user.getMemberId(),
 		         deviceId,
@@ -411,6 +414,8 @@ public class MemberRestController {
 		         "NORMAL"
 		 );
 
+		 log.info("LOGIN STEP 2 - 로그인 기기 저장 완료");
+		    
         // 7. Access Token 생성
         String accessToken =
                 jwtTokenProvider.createAccessToken(
@@ -419,12 +424,16 @@ public class MemberRestController {
                         deviceId
                 );
 
+        log.info("LOGIN STEP 3 - Access Token 생성 완료");
+	    
         // 8. Refresh Token 생성
         String refreshToken =
                 jwtTokenProvider.createRefreshToken(
                         user.getMemberId()
                 );
 
+        log.info("LOGIN DEBUG - refreshToken null 여부: {}", refreshToken == null);
+        
         // 9. Refresh Token Redis 저장
         refreshTokenService.saveRefreshToken(
                 user.getMemberId(),
@@ -432,6 +441,8 @@ public class MemberRestController {
                 refreshToken,
                 jwtTokenProvider.getRefreshTokenExpiration()
         );
+        
+        log.info("LOGIN DEBUG - Redis refreshToken 저장 완료");
 
         // 10. Refresh Token HttpOnly Cookie 생성
         ResponseCookie refreshTokenCookie =
@@ -443,6 +454,9 @@ public class MemberRestController {
                         .sameSite("Lax")
                         .build();
 
+
+	    log.info("LOGIN STEP 6 - 로그인 성공 응답 반환");
+	    
         // 11. 로그인 응답
         LoginResponseDto response =
                 new LoginResponseDto(
