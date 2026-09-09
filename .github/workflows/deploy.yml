@@ -1,0 +1,236 @@
+name: MOIT v3 CI/CD
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "moit-v3/**"
+      - ".github/workflows/deploy.yml"
+
+jobs:
+
+  # =========================
+  # Backend CI
+  # =========================
+  build-backend:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: moit-v3/back
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Grant execute permission
+        run: chmod +x gradlew
+
+      - name: Build Spring Boot
+        run: ./gradlew clean build -x test --no-daemon
+
+      - name: Upload backend JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-jar
+          path: moit-v3/back/build/libs/back-0.0.1-SNAPSHOT.jar
+
+
+  # =========================
+  # Frontend CI
+  # =========================
+  build-frontend:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: moit-v3/front
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: moit-v3/front/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Build Next.js
+        env:
+          NEXT_PUBLIC_API_BASE_URL: https://moit-j.duckdns.org
+        run: npm run build
+
+      - name: Upload frontend build
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: |
+            moit-v3/front/.next
+            moit-v3/front/public
+            moit-v3/front/package.json
+            moit-v3/front/package-lock.json
+
+
+  # =========================
+  # AWS EC2 Deploy
+  # =========================
+  deploy:
+    needs:
+      - build-backend
+      - build-frontend
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Download backend artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-jar
+          path: deploy/backend
+
+      - name: Download frontend artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-build
+          path: deploy/frontend
+
+      # -------------------------
+      # SSH 설정
+      # -------------------------
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/moit.pem
+          chmod 600 ~/.ssh/moit.pem
+
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+      # -------------------------
+      # EC2 배포 디렉터리 생성
+      # -------------------------
+      - name: Prepare EC2
+        run: |
+          ssh -i ~/.ssh/moit.pem \
+            ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} \
+            "mkdir -p ~/moit-deploy/backend ~/moit-deploy/frontend"
+
+      # -------------------------
+      # Backend JAR 전송
+      # -------------------------
+      - name: Upload backend
+        run: |
+          scp -i ~/.ssh/moit.pem \
+            deploy/backend/back-0.0.1-SNAPSHOT.jar \
+            ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:~/moit-deploy/backend/
+
+      # -------------------------
+      # Frontend 전송
+      # -------------------------
+      - name: Upload frontend
+        run: |
+          scp -i ~/.ssh/moit.pem -r \
+            deploy/frontend/. \
+            ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:~/moit-deploy/frontend/
+
+      # -------------------------
+      # EC2 배포
+      # -------------------------
+      - name: Deploy to EC2
+        run: |
+          ssh -i ~/.ssh/moit.pem \
+            ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} << 'EOF'
+
+          set -e
+
+          echo "================================="
+          echo "MOIT v3 deployment started"
+          echo "================================="
+
+          # =========================
+          # Backend
+          # =========================
+
+          echo "[1/4] Deploy backend"
+
+          pkill -f "back-0.0.1-SNAPSHOT.jar" || true
+
+          cp ~/moit-deploy/backend/back-0.0.1-SNAPSHOT.jar \
+             ~/2026-moit-projects/moit-v3/back/build/libs/back-0.0.1-SNAPSHOT.jar
+
+          cd ~/2026-moit-projects/moit-v3/back
+
+          nohup java -jar \
+            build/libs/back-0.0.1-SNAPSHOT.jar \
+            --spring.profiles.active=prod \
+            > app.log 2>&1 &
+
+          echo "Backend started"
+
+
+          # =========================
+          # Frontend
+          # =========================
+
+          echo "[2/4] Deploy frontend"
+
+          pkill -f "next start" || true
+
+          cd ~/2026-moit-projects/moit-v3/front
+
+          rm -rf .next
+
+          cp -r ~/moit-deploy/frontend/.next .
+
+          cp -r ~/moit-deploy/frontend/public .
+
+          cp ~/moit-deploy/frontend/package.json .
+
+          cp ~/moit-deploy/frontend/package-lock.json .
+
+          npm ci --omit=dev --legacy-peer-deps
+
+          nohup npm start > next.log 2>&1 &
+
+          echo "Frontend started"
+
+
+          # =========================
+          # 상태 확인
+          # =========================
+
+          echo "[3/4] Check processes"
+
+          sleep 5
+
+          if ss -tlnp | grep -q ":8080"; then
+            echo "Backend :8080 OK"
+          else
+            echo "Backend :8080 FAILED"
+            exit 1
+          fi
+
+          if ss -tlnp | grep -q ":3000"; then
+            echo "Frontend :3000 OK"
+          else
+            echo "Frontend :3000 FAILED"
+            exit 1
+          fi
+
+
+          echo "[4/4] Deployment completed"
+
+          EOF
