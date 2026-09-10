@@ -155,9 +155,6 @@ public class TossPaymentServiceImpl implements TossPaymentService {
 
                 } else if (payment.getPaymentType() == PaymentType.EXTENSION) {
 
-                    // 연장 결제
-                    advertisement.completeExtensionPayment();
-
                     // 연장 일수 가져오기
                     Integer periodDays =
                             payment.getPeriodDays();

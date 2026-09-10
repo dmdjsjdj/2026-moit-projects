@@ -372,19 +372,7 @@ public class Advertisement extends BaseEntity{
         this.paymentStatus = PaymentStatus.PAID;
         this.pendingPaymentType = null;
     }
-    
-    // 연장 결제 대기
-    public void waitForExtensionPayment() {
-        this.paymentStatus = PaymentStatus.WAITING;
-        this.pendingPaymentType = PaymentType.EXTENSION;
-    }
-    
-    // 연장 결제 완료
-    public void completeExtensionPayment() {
-        this.paymentStatus = PaymentStatus.PAID;
-        this.pendingPaymentType = null;
-    }
-    
+
     // 기간 연장
     public void extendEndDatetime(int periodDays) {
         this.endDatetime = this.endDatetime.plusDays(periodDays);

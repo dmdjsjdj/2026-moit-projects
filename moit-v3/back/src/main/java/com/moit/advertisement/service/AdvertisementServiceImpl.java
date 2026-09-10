@@ -1308,8 +1308,8 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
         BigDecimal amount = price.getBasePrice();
 
-        // 연장 결제 대기 상태
-        advertisement.waitForExtensionPayment();
+        // 연장 결제 대기 상태 (기존 광고 상태를 변경x)
+//        advertisement.waitForExtensionPayment();
 
         // 결제 주문번호 생성
         String orderId = "AD_EXT_" + adId + "_" + UUID.randomUUID();
