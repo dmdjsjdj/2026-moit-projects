@@ -404,7 +404,7 @@ public class MemberRestController {
 		 // =========================================================
 
 		    
-	    log.info("LOGIN STEP 1 - 새 기기 알림 처리 완료");
+	    log.info("LOGIN STEP 1 - 새 기기 알림 처리 완료"); 
 		 
 		 loginDeviceService.saveLoginDevice(
 		         user.getMemberId(),

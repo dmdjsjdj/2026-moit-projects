@@ -133,7 +133,11 @@ export default function AdvertiseExtensionPayment({
           return;
         }
 
-        console.error(  '연장 결제 초기화 실패:'  );
+        console.error('연장 결제 초기화 실패:', error);
+        console.error('에러 메시지:', error?.message);
+        console.error('에러 코드:', error?.code);
+        console.error('응답:', error?.response?.data);
+        console.error('상태:', error?.response?.status);
 
         message.error(
           error.response?.data?.message ||

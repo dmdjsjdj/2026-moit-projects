@@ -939,6 +939,7 @@ function* logoutSaga(action) {
 
             window.location.href = kakaoLogoutUrl;
 
+            
             return;
         }
 
