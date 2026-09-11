@@ -41,6 +41,10 @@ dependencies {
     // oracle 
    runtimeOnly 'com.oracle.database.jdbc:ojdbc11'
 
+   implementation 'com.oracle.database.security:oraclepki'
+   implementation 'com.oracle.database.security:osdt_core'
+   implementation 'com.oracle.database.security:osdt_cert'
+
     // Lombok
    compileOnly 'org.projectlombok:lombok'
    annotationProcessor 'org.projectlombok:lombok'
