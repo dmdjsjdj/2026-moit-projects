@@ -1,151 +1,170 @@
-# 🚀 MOIT (모잇)
+# 🔷 MOIT v1
 
-## 📌 프로젝트 소개
+> **Spring + JSP + MyBatis 기반으로 구현한 MOIT 첫 번째 프로젝트**
 
-**MOIT(모잇)** 는 스터디, 프로젝트, 운동, 취미 활동 등 **공통의 관심사와 목표를 가진 사람들이 모임을 만들고 참여할 수 있는 목적형 커뮤니티 플랫폼**입니다.
+MOIT의 초기 버전으로, 관심사를 기반으로 사용자가 모임을 만들고 참여할 수 있는 목적형 커뮤니티 서비스를 구현했습니다.
 
-단순한 친목 중심의 커뮤니티가 아닌, 같은 목표를 가진 사용자들이 효율적으로 연결되고 활동할 수 있는 환경을 제공하는 것을 목표로 합니다.
-
----
-
-## 🎯 기획 의도
-
-### 기획 배경
-
-최근 청년 세대 사이에서는 단순한 친목 모임보다 스터디, 프로젝트, 운동, 취미 활동 등 특정 목적을 중심으로 모이는 **'목적형 모임' 문화**가 확산되고 있습니다.
-
-하지만 다양한 소모임 정보가 여러 플랫폼에 분산되어 있어 사용자가 자신의 관심사와 목적에 맞는 모임을 찾기 어렵고, 원하는 활동에 참여하기까지 많은 시간과 노력이 필요합니다.
-
-이에 **MOIT**는 관심사와 활동 목적을 기반으로 소모임을 쉽고 빠르게 탐색하고 참여할 수 있는 플랫폼을 제공하여, 사용자들이 보다 효율적으로 새로운 사람들과 연결될 수 있도록 기획되었습니다.
-
-> MOIT는 단순한 친목 중심 플랫폼이 아닌, 같은 목표를 가진 사람들이 효율적으로 연결될 수 있는 목적형 커뮤니티 플랫폼을 지향합니다.
-
-### 참고 자료
-
-* https://www.ejanews.co.kr/news/articleView.html?idxno=307937
+Java Spring Framework와 JSP를 이용해 화면과 서버를 구성하고, MyBatis를 통해 MySQL 데이터베이스와 연동했습니다.
 
 ---
 
-## ✨ 기대 효과
+## 📌 Project
 
-* 관심사와 목적에 맞는 소모임 탐색 편의성 향상
-* 대학생 및 일반인의 다양한 커뮤니티 활동 활성화
-* 스터디, 프로젝트, 취미 활동 등 생산적인 모임 참여 기회 확대
-* 목적 기반 커뮤니티 형성을 통한 사용자 만족도 향상
-* 안전하고 신뢰할 수 있는 모임 환경 제공
+**MOIT (Meet Our Interest Together)**
 
----
+스터디, 프로젝트, 운동, 취미 등 공통 관심사를 가진 사람들이 모임을 만들고 참여할 수 있는 커뮤니티 플랫폼입니다.
 
-## 📅 프로젝트 개요
+### 주요 흐름
 
-| 항목    | 내용                      |
-| ----- | ----------------------- |
-| 프로젝트명 | MOIT (모잇)               |
-| 개발 기간 | 2026.06.16 ~ 2026.06.22 |
-| 개발 형태 | 팀 프로젝트                  |
-| 개발 목표 | 목적 기반 소모임 커뮤니티 플랫폼 구축   |
-
----
-
-## 🔥 주요 기능
-
-### 👤 회원 기능
-
-* 회원가입
-* 로그인
-
-### 🤝 모임 기능
-
-* 모임 모집글 작성
-* 모집글 조회
-* 모집글 수정 및 삭제
-* 모임 신청
-
-### 📝 후기 기능
-
-* 후기 작성
-* 후기 조회
-* 후기 좋아요
-* 후기 수정 및 삭제
-
-### 🚨 신고 기능
-
-* 모집글 신고
-* 후기 신고
-* 신고 내역 관리
-* 관리자 신고 처리
-
-### 📢 광고 기능
-
-* 광고 등록
-* 광고 상태 확인
-* 광고 수정 및 삭제
-* 광고 노출 관리
+```text
+사용자
+ ↓
+JSP
+ ↓
+Controller
+ ↓
+Service
+ ↓
+MyBatis
+ ↓
+MySQL
+```
 
 ---
 
-## 💡 개발 특징
+## 🛠️ Tech Stack
 
-* 관심사 기반 소모임 플랫폼
-* 모집글 작성 및 신청 기능
-* 후기 및 좋아요 기능
-* 신고 시스템을 통한 안전한 커뮤니티 환경 제공
-* 광고 등록 및 관리 기능
-* 사용자 친화적인 UI 제공
-
-> 향후 관심사 기반 모임 추천 기능 추가 예정
-
----
-
-## 🛠 기술 스택
-
-### Front-End
-
-* HTML5
-* CSS3
-* JavaScript
-
-### Back-End
-
-* Java
-* Spring Framework
-
-### Database
-
-* MySQL
-
-### Collaboration
-
-* Git
-* GitHub
-* Notion
+| Category | Technology |
+|---|---|
+| Language | Java |
+| Backend | Spring Framework |
+| Frontend | JSP, HTML, CSS, JavaScript |
+| Database | MySQL |
+| Data Access | MyBatis |
+| Server | Apache Tomcat |
+| Version Control | Git, GitHub |
 
 ---
 
-## 👥 Team
+## ✨ 주요 기능
 
-* 팀 프로젝트로 진행
-* GitHub Flow 기반 협업
-* Notion을 활용한 일정 및 업무 관리
+### 👤 회원
+
+- 회원가입
+- 로그인
+
+### 🤝 모임
+
+- 모집글 작성
+- 모집글 조회
+- 모집글 수정 및 삭제
+- 모임 신청
+
+### 📝 후기
+
+- 후기 작성
+- 후기 조회
+- 후기 수정 및 삭제
+- 후기 좋아요
+
+### 🚨 신고
+
+- 모집글 신고
+- 후기 신고
+- 신고 내역 관리
+- 관리자 신고 처리
+
+### 📢 광고
+
+- 광고 등록
+- 광고 조회
+- 광고 수정 및 삭제
+- 광고 상태 관리
 
 ---
 
-### 📢 MOIT
+## 🔄 데이터 처리 흐름
 
-**Meet + It = MOIT**
+```text
+Browser
+   ↓
+JSP
+   ↓
+Controller
+   ↓
+Service
+   ↓
+MyBatis
+   ↓
+MySQL
+   ↓
+Service
+   ↓
+Controller
+   ↓
+JSP
+```
 
-같은 관심사와 목표를 가진 사람들이 모여 함께 성장하는 목적형 커뮤니티 플랫폼
+사용자의 요청이 Controller와 Service를 거쳐 데이터베이스에 전달되고 다시 화면으로 반환되는 웹 애플리케이션의 기본적인 요청·응답 흐름을 구현했습니다.
 
-## 🎥 프로젝트 시연
-- 회원가입 및 로그인
-🔗 https://www.youtube.com/watch?v=qlZsblUcrpQ
-- 모임 등록 및 신청
-🔗 https://youtu.be/W8uqEza0bNc
-- 문의 등록
-🔗https://www.youtube.com/watch?v=PCCIJsmrKG8
-- 후기 등록
-🔗 https://www.youtube.com/watch?v=pyTIHHSDAqs&feature=youtu.be
-- 신고 등록
-🔗 https://www.youtube.com/watch?v=QSb3lZ5VrFA&feature=youtu.be
-- 광고
-🔗 https://www.youtube.com/watch?v=NZkUY0mHTUU&feature=youtu.be
+---
+
+## 📚 주요 학습
+
+### Spring MVC
+
+Controller, Service, DAO, View 계층을 분리하여 각 계층의 역할과 MVC 구조를 이해했습니다.
+
+### JSP
+
+서버에서 전달된 데이터를 화면에 출력하고 사용자 요청에 따라 동적으로 페이지를 구성했습니다.
+
+### MyBatis
+
+SQL을 직접 작성하여
+
+- SELECT
+- INSERT
+- UPDATE
+- DELETE
+- JOIN
+
+등의 데이터 처리 과정을 구현했습니다.
+
+### MySQL
+
+서비스에 필요한 데이터를 관계형 구조로 설계하고 SQL을 이용한 CRUD와 테이블 간 데이터 조회를 경험했습니다.
+
+---
+
+## 📈 v1에서 배운 점
+
+### 01. MVC 구조
+
+화면, 비즈니스 로직, 데이터 접근 영역을 분리하면서 각 계층의 역할을 이해했습니다.
+
+### 02. SQL과 애플리케이션 연결
+
+MyBatis를 통해 Java 애플리케이션과 SQL을 연결하고 조회 결과를 객체로 전달하는 과정을 경험했습니다.
+
+### 03. 웹 서비스 전체 흐름
+
+```text
+Browser
+ → Controller
+ → Service
+ → Database
+ → Service
+ → Controller
+ → JSP
+```
+
+사용자의 요청부터 데이터 처리와 화면 응답까지 하나의 흐름으로 이해하는 기반을 만들었습니다.
+
+---
+
+## 🚀 Next
+
+v1에서 경험한 Spring MVC와 데이터 처리 구조를 기반으로 다음 버전에서는 **Spring Boot 기반으로 프로젝트를 전환하고 보안, AI, Open API 등의 기능을 추가했습니다.**
+
+➡️ [MOIT v2](../moit-v2/README.md)
