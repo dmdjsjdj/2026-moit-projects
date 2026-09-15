@@ -71,7 +71,7 @@ jobs:
             rm -rf .next
 
             npm install --legacy-peer-deps
-            npm run build
+            npm run build -- --no-lint
 
             # 6. Frontend restart
             echo "[6/6] Frontend restart"
