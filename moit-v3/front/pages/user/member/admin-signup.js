@@ -21,7 +21,6 @@ import {
     MailOutlined,
     LockOutlined,
     UserOutlined,
-    PhoneOutlined,
 } from "@ant-design/icons";
 
 import dayjs from "dayjs";
@@ -33,7 +32,6 @@ import {
     checkLoginIdRequest,
     checkEmailRequest,
     checkNicknameRequest,
-    checkMobileRequest,
     resetDuplicateCheck,
     resetEmailVerification,
     checkPasswordLeakRequest,
@@ -146,7 +144,6 @@ function AdminSignup() {
 
     const [loginId, setLoginId] = useState("");
     const [nickname, setNickname] = useState("");
-    const [mobile, setMobile] = useState("");
     const [password, setPassword] = useState("");
 
 
@@ -204,20 +201,6 @@ function AdminSignup() {
 
         dispatch(resetDuplicateCheck("nickname"));
     };
-
-
-    // =========================================================
-    // 전화번호 입력
-    // =========================================================
-    const handleMobileChange = (e) => {
-
-        const value = e.target.value;
-
-        setMobile(value);
-
-        dispatch(resetDuplicateCheck("mobile"));
-    };
-
 
     // =========================================================
     // 비밀번호 입력
@@ -310,27 +293,6 @@ function AdminSignup() {
             )
         );
     };
-
-
-    // =========================================================
-    // 전화번호 중복확인
-    // =========================================================
-    const handleCheckMobile = () => {
-
-        if (!mobile.trim()) {
-
-            message.warning("전화번호를 입력해주세요.");
-
-            return;
-        }
-
-        dispatch(
-            checkMobileRequest(
-                mobile.trim()
-            )
-        );
-    };
-
 
     // =========================================================
     // 이메일 인증번호 발송
@@ -451,18 +413,6 @@ function AdminSignup() {
             return;
         }
 
-
-        // 전화번호 중복확인
-        if (!duplicateCheck.mobile) {
-
-            message.error(
-                "전화번호 중복확인을 완료해주세요."
-            );
-
-            return;
-        }
-
-
         // 비밀번호 유출검사
         if (!passwordLeak.checked) {
 
@@ -499,26 +449,15 @@ function AdminSignup() {
         // 관리자 회원가입 데이터
         // =====================================================
         const signupData = {
-
             loginId: values.loginId,
-
             password: values.password,
-
             nickname: values.nickname,
-
             email: values.email,
-
-            mobile: values.mobile,
-
             // 관리자
             memberTypeId: 3,
-
             gender: values.gender,
-
             birth: birth,
-
             profileUrl: "",
-
         };
 
 
@@ -1112,69 +1051,6 @@ function AdminSignup() {
                         </div>
 
                     )}
-
-
-                    {/* =================================================
-                        전화번호
-                    ================================================= */}
-                    <Form.Item
-                        label="전화번호"
-                        name="mobile"
-                    >
-
-                        <Space.Compact
-                            style={{
-                                width: "100%",
-                            }}
-                        >
-
-                            <Input
-                                prefix={
-                                    <PhoneOutlined />
-                                }
-                                placeholder="전화번호를 입력해주세요."
-                                value={mobile}
-                                onChange={
-                                    handleMobileChange
-                                }
-                            />
-
-                            <Button
-                                type="primary"
-                                onClick={
-                                    handleCheckMobile
-                                }
-                            >
-                                중복확인
-                            </Button>
-
-                        </Space.Compact>
-
-                    </Form.Item>
-
-
-                    {duplicateCheck.mobile === true && (
-
-                        <Text type="success">
-
-                            <CheckOutlined />
-
-                            {" "}
-                            사용 가능한 전화번호입니다.
-
-                        </Text>
-
-                    )}
-
-
-                    {duplicateCheck.mobile === false && (
-
-                        <Text type="danger">
-                            이미 사용 중인 전화번호입니다.
-                        </Text>
-
-                    )}
-
 
                     {/* =================================================
                         생년월일

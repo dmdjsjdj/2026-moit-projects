@@ -40,6 +40,9 @@ function MeetupDetailPage() {
     const [currentSort, setCurrentSort] = useState("id,desc");
     const [currentKeyword, setCurrentKeyword] = useState("");
 
+    const API_BASE_URL =
+    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080";
+
     useEffect(() => {
         if (!router.isReady) return;
 
@@ -237,7 +240,7 @@ function MeetupDetailPage() {
                   (imagePath) =>
                       `${API_BASE_URL}/upload/meetup/${imagePath}`,
               )
-            : ["http://localhost:8080/upload/no-image.png"];
+            : [`${API_BASE_URL}/upload/no-image.png`];
 
     const rawReviews =
         reduxReviews?.map((review) => ({
