@@ -6,7 +6,7 @@ import {
 } from 'redux-saga/effects';
 
 import {
-    getAdvertiseList,
+    getMyAdvertiseList,
     getAdvertiseDetail,
     createAdvertise,
     updateAdvertise,
@@ -40,7 +40,7 @@ import {
 export function* getAdvertiseListSaga(action) {
     try {
         const response = yield call(
-            getAdvertiseList,
+            getMyAdvertiseList,
             action.payload
         );
 
