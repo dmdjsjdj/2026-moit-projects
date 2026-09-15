@@ -32,7 +32,7 @@ function AdvertiseListPage() {
   // 입력창에 현재 입력된 검색어
   const [searchInput, setSearchInput] = useState('');
 
-  // 실제 API 검색에 사용되는 검색어
+  // 실제 API 검색에 사용되는 검색어 
   const [searchText, setSearchText] = useState('');
 
   const [sort, setSort] = useState('');
