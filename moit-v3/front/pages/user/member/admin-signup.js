@@ -1120,13 +1120,6 @@ function AdminSignup() {
                     <Form.Item
                         label="전화번호"
                         name="mobile"
-                        rules={[
-                            {
-                                required: true,
-                                message:
-                                    "전화번호를 입력해주세요.",
-                            },
-                        ]}
                     >
 
                         <Space.Compact
