@@ -6,14 +6,18 @@ on:
       - main
 
 jobs:
-  deploy:
+
+  # =======================
+  # Backend
+  # =======================
+  backend:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Deploy to EC2
+      - name: Deploy Backend to EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -26,32 +30,28 @@ jobs:
             PROJECT_DIR="/home/ubuntu/2026-moit-projects/moit-v3"
 
             echo "================================"
-            echo "MOIT v3 deployment started"
+            echo "MOIT v3 Backend deployment"
             echo "================================"
 
             cd "$PROJECT_DIR"
 
-            # 1. 최신 소스 가져오기
-            echo "[1/6] Git pull"
+            echo "[1/4] Git pull"
 
             git fetch origin main
             git reset --hard origin/main
 
-            # 2. Backend build
-            echo "[2/6] Backend build"
+            echo "[2/4] Backend build"
 
             cd "$PROJECT_DIR/back"
 
             chmod +x gradlew
-            ./gradlew clean bootJar
+            ./gradlew clean bootJar --no-daemon
 
-            # 3. Backend restart
-            echo "[3/6] Backend restart"
+            echo "[3/4] Backend restart"
 
             sudo systemctl restart moit-back
 
-            # 4. Backend 확인
-            echo "[4/6] Backend status"
+            echo "[4/4] Backend status"
 
             sleep 5
 
@@ -63,18 +63,53 @@ jobs:
 
             echo "✅ Backend is running"
 
-            # 5. Frontend build
-            echo "[5/6] Frontend build"
+
+  # =========================
+  # Frontend
+  # =========================
+  frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy Frontend to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+
+          script: |
+            set -e
+
+            PROJECT_DIR="/home/ubuntu/2026-moit-projects/moit-v3"
+
+            echo "================================"
+            echo "MOIT v3 Frontend deployment"
+            echo "================================"
+
+            cd "$PROJECT_DIR"
+
+            echo "[1/4] Git pull"
+
+            git fetch origin main
+            git reset --hard origin/main
+
+            echo "[2/4] Frontend install"
 
             cd "$PROJECT_DIR/front"
 
+            npm install --legacy-peer-deps
+
+            echo "[3/4] Frontend build"
+
             rm -rf .next
 
-            npm install --legacy-peer-deps
             npm run build -- --no-lint
 
-            # 6. Frontend restart
-            echo "[6/6] Frontend restart"
+            echo "[4/4] Frontend restart"
 
             sudo systemctl restart moit-front
 
@@ -87,7 +122,3 @@ jobs:
             fi
 
             echo "✅ Frontend is running"
-
-            echo "================================"
-            echo "MOIT v3 deployment completed"
-            echo "================================"
