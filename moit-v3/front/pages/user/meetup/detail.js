@@ -235,7 +235,7 @@ function MeetupDetailPage() {
         meetup?.imagePaths?.length > 0
             ? meetup.imagePaths.map(
                   (imagePath) =>
-                      `http://localhost:8080/upload/meetup/${imagePath}`,
+                      `${API_BASE_URL}/upload/meetup/${imagePath}`,
               )
             : ["http://localhost:8080/upload/no-image.png"];
 
