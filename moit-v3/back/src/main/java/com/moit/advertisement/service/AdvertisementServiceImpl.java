@@ -2686,27 +2686,31 @@ public class AdvertisementServiceImpl implements AdvertisementService {
             // Advertisement에 저장된 실제 광고 예산
            	dto.setTotalBudget(ad.getTotalBudget());
         
-	     // 결제 정보
-	     advertisementPaymentRepository.findTopByAdvertisement_AdIdOrderByCreatedAtDesc(ad.getAdId())
-             .ifPresent(payment -> {
+         // 결제 정보
+           	advertisementPaymentRepository
+           	    .findTopByAdvertisement_AdIdAndPaymentStatusOrderByCreatedAtDesc(
+           	        ad.getAdId(),
+           	        PaymentHistoryStatus.PAID
+           	    )
+           	    .ifPresent(payment -> {
 
-                 dto.setPaymentType(payment.getPaymentType());  
-                 dto.setPaymentHistoryStatus( payment.getPaymentStatus() );
+           	        dto.setPaymentType(payment.getPaymentType());
+           	        dto.setPaymentHistoryStatus(payment.getPaymentStatus());
 
-                 dto.setPaymentAmount( payment.getAmount() );  
-                 dto.setPaidAt( payment.getPaidAt() );
-                 
-                 dto.setOrderId(payment.getOrderId());
-                 dto.setPaymentKey(payment.getPaymentKey());
-                 
-                 dto.setPaymentMethod(payment.getPaymentMethod());
-                 
-                 dto.setBaseAmount(payment.getBaseAmount());
-                 dto.setPositionAmount(payment.getPositionAmount());
-                 
-                 dto.setCancelledAt(payment.getCancelledAt());
-                 dto.setCancelReason(payment.getCancelReason());
-             });
+           	        dto.setPaymentAmount(payment.getAmount());
+           	        dto.setPaidAt(payment.getPaidAt());
+
+           	        dto.setOrderId(payment.getOrderId());
+           	        dto.setPaymentKey(payment.getPaymentKey());
+
+           	        dto.setPaymentMethod(payment.getPaymentMethod());
+
+           	        dto.setBaseAmount(payment.getBaseAmount());
+           	        dto.setPositionAmount(payment.getPositionAmount());
+
+           	        dto.setCancelledAt(payment.getCancelledAt());
+           	        dto.setCancelReason(payment.getCancelReason());
+           	    });
         
         return dto;
     }
