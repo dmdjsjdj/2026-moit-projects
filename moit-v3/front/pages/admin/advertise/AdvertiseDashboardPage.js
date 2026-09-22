@@ -352,10 +352,9 @@ function AdvertiseDashboardPage() {
                 ],
 
                 borderWidth: 1,
-
                 borderRadius: 7,
-
-                barPercentage: 0.65,
+                barPercentage: 0.55,
+                categoryPercentage: 0.7,
             },
         ],
     };
@@ -367,29 +366,47 @@ function AdvertiseDashboardPage() {
 
         maintainAspectRatio: false,
 
+        indexAxis: 'y',
+
         plugins: {
 
             legend: {
                 display: false,
             },
+
         },
 
         scales: {
 
-            y: {
+            x: {
                 beginAtZero: true,
 
                 grid: {
                     color: 'rgba(0, 0, 0, 0.05)',
                 },
+
+                ticks: {
+                    callback: value => `${value}%`,
+                },
             },
 
-            x: {
+            y: {
+
                 grid: {
                     display: false,
                 },
+
+                ticks: {
+                    autoSkip: false,
+                    font: {
+                        size: 12,
+                    },
+                },
+
             },
+
         },
+
     };
 
 
@@ -476,10 +493,9 @@ function AdvertiseDashboardPage() {
                 ],
 
                 borderWidth: 1,
-
                 borderRadius: 7,
-
-                barPercentage: 0.6,
+                barPercentage: 0.55,
+                categoryPercentage: 0.7,
             },
         ],
     };
@@ -491,29 +507,49 @@ function AdvertiseDashboardPage() {
 
         maintainAspectRatio: false,
 
+        indexAxis: 'y',
+
         plugins: {
 
             legend: {
                 display: false,
             },
+
         },
 
         scales: {
 
-            y: {
+            x: {
+
                 beginAtZero: true,
 
                 grid: {
                     color: 'rgba(0, 0, 0, 0.05)',
                 },
+
+                ticks: {
+                    precision: 0,
+                },
+
             },
 
-            x: {
+            y: {
+
                 grid: {
                     display: false,
                 },
+
+                ticks: {
+                    autoSkip: false,
+                    font: {
+                        size: 11,
+                    },
+                },
+
             },
+
         },
+
     };
 
     // =========================================================
@@ -568,10 +604,9 @@ function AdvertiseDashboardPage() {
                 ],
 
                 borderWidth: 1,
-
                 borderRadius: 7,
-
-                barPercentage: 0.6,
+                barPercentage: 0.55,
+                categoryPercentage: 0.7,
             },
         ],
     };
@@ -583,29 +618,49 @@ function AdvertiseDashboardPage() {
 
         maintainAspectRatio: false,
 
+        indexAxis: 'y',
+
         plugins: {
 
             legend: {
                 display: false,
             },
+
         },
 
         scales: {
 
-            y: {
+            x: {
+
                 beginAtZero: true,
 
                 grid: {
                     color: 'rgba(0, 0, 0, 0.05)',
                 },
+
+                ticks: {
+                    callback: value => `${value}%`,
+                },
+
             },
 
-            x: {
+            y: {
+
                 grid: {
                     display: false,
                 },
+
+                ticks: {
+                    autoSkip: false,
+                    font: {
+                        size: 11,
+                    },
+                },
+
             },
+
         },
+
     };
 
 
