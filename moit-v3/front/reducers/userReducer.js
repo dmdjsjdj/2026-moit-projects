@@ -399,19 +399,7 @@ const userReducer = createSlice({
             if (!state.signupBehaviorAnalysis[field]) {
                 return;
             }
-            console.log(
-                "===== recordSignupBehaviorFailure 호출 =====",
-                field,
-                "현재:",
-                state.signupBehaviorAnalysis[field].failCount
-            );
-
             state.signupBehaviorAnalysis[field].failCount += 1;
-
-            console.log(
-                "증가 후:",
-                state.signupBehaviorAnalysis[field].failCount
-            );
         },
 
         // AI 분석 요청

@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.moit.advertisement.dto.AdminAdvertisementStatDto;
+import com.moit.advertisement.dto.AdvertisementAnalyticsDto;
 import com.moit.advertisement.dto.AdvertisementCalculationResultDto;
 import com.moit.advertisement.dto.AdvertisementChartDto;
 import com.moit.advertisement.dto.AdvertisementDto;
@@ -3268,5 +3269,37 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 
         return ((currentValue - previousValue)
                 / previousValue) * 100;
+    }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public List<AdvertisementAnalyticsDto> selectAnalyticsData() {
+
+        LocalDate today = LocalDate.now();
+
+        // 최근 30일 분석 데이터
+        LocalDate startDate = today.minusDays(29);
+
+        List<AdvertisementDailyStatistics> statistics =
+                dailyStatisticsRepository
+                        .findAnalyticsStatistics(startDate);
+
+        return statistics.stream()
+                .map(stat -> {
+
+                    Advertisement advertisement =
+                            stat.getAdvertisement();
+
+                    return new AdvertisementAnalyticsDto(
+                            stat.getStatDate(),
+                            advertisement.getAdId(),
+                            advertisement.getTitle(),
+                            advertisement.getAdGrade().name(),
+                            stat.getPosition().name(),
+                            stat.getImpressions(),
+                            stat.getClicks()
+                    );
+                })
+                .toList();
     }
 }

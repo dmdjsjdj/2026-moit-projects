@@ -77,3 +77,8 @@ coverage/
 
 # Build output / Eclipse generated files
 **/bin/
+
+venv/
+**/venv/
+venv/**
+**/venv/**

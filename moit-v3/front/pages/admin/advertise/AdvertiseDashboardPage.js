@@ -679,6 +679,17 @@ function AdvertiseDashboardPage() {
 
                 </div>
 
+                <Button
+                    type="primary"
+                    onClick={() => {
+                        window.open(
+                            '/analytics/',
+                            '_blank'
+                        );
+                    }}
+                >
+                    광고 데이터 분석
+                </Button>
 
                 <Button
                     style={{

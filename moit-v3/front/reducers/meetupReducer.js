@@ -267,9 +267,6 @@ const meetupReducer = createSlice({
                 (meetup) => meetup.id === meetupId,
             );
 
-            // console.log("Reducer meetupId:", meetupId);
-            // console.log("Reducer meetup:", meetup);
-
             if (meetup) {
                 meetup.hidden = !meetup.hidden;
             }
