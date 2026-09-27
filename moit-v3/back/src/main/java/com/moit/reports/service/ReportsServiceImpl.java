@@ -41,6 +41,19 @@ import com.moit.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.HashMap;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.client.RestTemplate;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -62,6 +75,9 @@ public class ReportsServiceImpl implements ReportsService {
 	private final ReportLockService reportLockService;
 	private final SendEmailService sendEmailService;
 	private final ApplicationEventPublisher eventPublisher;
+	
+	@Value("${django.base-url:http://127.0.0.1:8000}")
+	private String djangoBaseUrl;
 
 	// 사용자 신고 작성
 	@Override
@@ -133,6 +149,8 @@ public class ReportsServiceImpl implements ReportsService {
 			ReportResponseDto dto = ReportResponseDto.from(report);
 			// 2. 신고 대상 회원 정보 추가
 			setTargetMemberInfo(report, dto);
+			// 3. 신고 대상 글 제목
+			setTargetTitle(report, dto);
 
 			return dto;
 		}).toList();
@@ -155,6 +173,8 @@ public class ReportsServiceImpl implements ReportsService {
 
 		// 신고당한 회원 정보 추가 !!!
 		setTargetMemberInfo(report, responseDto);
+		// 신고당한 게시글 제목
+		setTargetTitle(report, responseDto);
 
 		return responseDto;
 //		return ReportResponseDto.from(report);
@@ -171,20 +191,19 @@ public class ReportsServiceImpl implements ReportsService {
 	@Transactional
 	@Override
 	public ReportResponseDto updateAdminReport(Long reportId, Long memberId, ReportProcessDto processDto) {
-		// 처리 사유 공백 막기
 		if (processDto.getProcessReason() == null || processDto.getProcessReason().isBlank()) {
 			throw new IllegalArgumentException("처리 사유를 입력해주세요.");
 		}
 		
-		// 신고 처리 가능? tryLock
-		boolean acquired = reportLockService.tryLock(reportId);
-
-		// 현재 처리중
-		if (!acquired) {
-			throw new IllegalStateException("현재 처리중");
+		boolean acquired = reportLockService.tryLock(reportId);			// tryLock
+		
+		if (!acquired) {												// "현재 처리중인 신고입니다."
+			throw new IllegalStateException("현재 처리중인 신고입니다.");
 		}
 
 		try {
+//			Thread.sleep(5000);		// 동시 처리 테스트용, 나중에 반드시 삭제
+			
 			// PEDING 상태 조회
 			Report report = getPendingReport(reportId);
 
@@ -212,12 +231,21 @@ public class ReportsServiceImpl implements ReportsService {
 
 			// 이메일 발송 이벤트 생성
 			EmailRequestDto emailDto = sendEmailService.adminReportStatusSendEmail(report, changedStatus);
+			
+			log.info("[REPORT] 신고 처리 DB 작업 완료");
+			log.info("[REPORT] 처리 Thread = {}", Thread.currentThread().getName());
+			log.info("[REPORT] 이메일 이벤트 발행 요청");
 			eventPublisher.publishEvent(emailDto);
+			log.info("[REPORT] 신고 처리 로직 종료 - reportId={}", reportId);
 
 			ReportResponseDto responseDto = ReportResponseDto.from(report);
 			setTargetMemberInfo(report, responseDto);
-
+			
 			return responseDto;
+			
+//		} catch (InterruptedException e) {
+//		    Thread.currentThread().interrupt();
+//		    throw new IllegalStateException("신고 처리 테스트 중 오류가 발생했습니다.", e);
 
 		} finally {
 			reportLockService.unlock(reportId);
@@ -284,6 +312,8 @@ public class ReportsServiceImpl implements ReportsService {
 			ReportResponseDto dto = ReportResponseDto.from(report);
 			// 신고 대상 회원 정보
 			setTargetMemberInfo(report, dto);
+			// 3. 신고 대상 글 제목
+			setTargetTitle(report, dto);
 
 			return dto;
 		}).toList();
@@ -306,25 +336,67 @@ public class ReportsServiceImpl implements ReportsService {
 
 		// 신고당한 회원 정보 추가 !!!
 		setTargetMemberInfo(report, responseDto);
+		
+		// 신고 대상 게시글 제목 추가
+		setTargetTitle(report, responseDto);
 
-		return responseDto;
+	    return responseDto;
 	}
 
 	// 관리자 통계
 	@Override
 	public Map<String, Long> getAdminReportStats() {
 
+		try {
+			// 삭제되지 않은 신고 원본 조회
+			List<Report> reports = reportRepository.findByDeleteYn('N');
+
+			// Django에 상태값만 전달
+			List<Map<String, String>> reportData = reports.stream()
+					.map(report -> Map.of("status", report.getStatus().name())).toList();
+
+			Map<String, Object> payload = new HashMap<>();
+			payload.put("reports", reportData);
+
+			RestTemplate restTemplate = new RestTemplate();
+
+			String analysisUrl = djangoBaseUrl + "/dashboard/api/report-analysis/";
+
+			ObjectMapper objectMapper = new ObjectMapper();
+			byte[] jsonBody = objectMapper.writeValueAsBytes(payload);
+
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_JSON);
+			headers.setContentLength(jsonBody.length);
+
+			HttpEntity<byte[]> requestEntity = new HttpEntity<>(jsonBody, headers);
+
+			ResponseEntity<Map> response = restTemplate.exchange(analysisUrl, HttpMethod.POST, requestEntity,
+					Map.class);
+
+			Map<?, ?> analysisResult = response.getBody();
+
+			if (analysisResult != null) {
+				return Map.of("total", ((Number) analysisResult.get("total")).longValue(),
+						"pending", ((Number) analysisResult.get("pending")).longValue(),
+						"approved", ((Number) analysisResult.get("approved")).longValue(),
+						"rejected", ((Number) analysisResult.get("rejected")).longValue());
+			}
+
+		} catch (Exception e) {
+			log.error("[REPORT] Django Pandas 신고 통계 분석 실패", e);
+		}
+
+		// Django 장애 시 기존 DB 통계 fallback
 		long total = reportRepository.countByDeleteYn('N');
+
 		long pending = reportRepository.countByStatusAndDeleteYn(ReportStatus.PENDING, 'N');
+
 		long approved = reportRepository.countByStatusAndDeleteYn(ReportStatus.APPROVED, 'N');
+
 		long rejected = reportRepository.countByStatusAndDeleteYn(ReportStatus.REJECTED, 'N');
 
-		return Map.of(
-				"total", total,
-				"pending", pending,
-				"approved", approved,
-				"rejected", rejected
-		);
+		return Map.of("total", total, "pending", pending, "approved", approved, "rejected", rejected);
 	}
 
 	/////////////////////////////////////////////////////////////////////
@@ -388,7 +460,13 @@ public class ReportsServiceImpl implements ReportsService {
 	@Transactional
 	public long deleteAuditLogs() {
 		LocalDateTime cutoff = LocalDateTime.now().minusYears(3);
-		return reportAuditLogRepository.deleteByProcessedAtBefore(cutoff);
+		
+		log.info("[AUDIT] 3년 경과 Audit Log 정리 시작");
+	    log.info("[AUDIT] 삭제 기준 시점 = {}", cutoff);
+	    long deletedCount = reportAuditLogRepository.deleteByProcessedAtBefore(cutoff);
+        log.info("[AUDIT] 3년 경과 Audit Log 정리 완료 - 삭제 건수={}", deletedCount);
+	    
+		return deletedCount;
 	}
 	
 	
@@ -436,6 +514,35 @@ public class ReportsServiceImpl implements ReportsService {
 			responseDto.setTargetStatusName(targetMemberInfo.getMemberReportStatus().getStatusName());
 		}
 
+	}
+	
+	// 신고 대상 게시글 제목 찾기
+	private void setTargetTitle(Report report, ReportResponseDto responseDto) {
+
+		if (report.getTargetType() == TargetType.MEETUP) {
+			String targetTitle = meetupRepository.findById(report.getTargetId())
+					.map(Meetup::getTitle)
+					.orElse("삭제된 모임글");
+			responseDto.setTargetTitle(targetTitle);
+			return;
+		}
+
+		if (report.getTargetType() == TargetType.REVIEW) {
+			String targetTitle = reviewRepository.findById(report.getTargetId())
+					.map(review -> {
+				Meetup meetup = review.getMeetup();
+
+				if (meetup == null || meetup.getTitle() == null || meetup.getTitle().isBlank()) {
+					return "모임 후기";
+				}
+				return meetup.getTitle() + " 후기";
+			}).orElse("삭제된 리뷰글");
+
+			responseDto.setTargetTitle(targetTitle);
+			return;
+		}
+
+		responseDto.setTargetTitle("확인할 수 없는 게시글");
 	}
 
 	//////////////////////////////////////////////////////////////////////////////

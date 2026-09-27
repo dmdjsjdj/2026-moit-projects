@@ -2,6 +2,7 @@ package com.moit.reports.repository;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -68,4 +69,7 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
 	long countByDeleteYn(Character deleteYn);
 
 	long countByStatusAndDeleteYn(ReportStatus status, Character deleteYn);
+
+	// Pandas 분석용 신고 원본 조회
+   List<Report> findByDeleteYn(Character deleteYn);
 } 
