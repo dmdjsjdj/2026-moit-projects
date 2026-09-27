@@ -44,6 +44,9 @@ function questionDetail() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isAnswerDeleting, setIsAnswerDeleting] = useState(false);
 
+  const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
+
   // 상세 조회
   useEffect(() => {
     if (!router.isReady || !questionId) return;
@@ -389,7 +392,7 @@ function questionDetail() {
                 >
                   📎{' '}
                   <a
-                    href={`http://localhost:8080${image.imagePath}`}
+                    href={`${API_BASE_URL}${image.imagePath}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >

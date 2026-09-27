@@ -28,6 +28,9 @@ function questionWrite() {
   const isMeetup = type === 'MEETUP';
 
   const title = isMeetup ? '모임 1:1 문의 등록' : '관리자 1:1 문의 등록';
+
+  const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
   
   useEffect(() => {
     if (success && qna?.questionId) {
