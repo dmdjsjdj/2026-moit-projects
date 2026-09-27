@@ -218,10 +218,19 @@ function UserHeader() {
       return profileUrl;
     }
 
-    const imageUrl =
-      `${process.env.NEXT_PUBLIC_API_BASE_URL}${profileUrl}`;
+    const baseUrl =
+        process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
-    return imageUrl;
+    // DB에는 /images/profile/... 로 저장되어 있지만
+    // 실제 서버 파일은 /upload/profile/... 에 존재
+    if (profileUrl.startsWith("/images/profile/")) {
+        return `${baseUrl}${profileUrl.replace(
+            "/images/profile/",
+            "/upload/profile/"
+        )}`;
+    }
+
+    return `${baseUrl}${profileUrl}`;
   };
 
   // =========================================================
