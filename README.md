@@ -5,6 +5,8 @@
 하나의 프로젝트를 여러 차례 고도화하며  
 **Spring → Spring Boot → React 기반의 분리형 구조**로 발전시켰습니다.
 
+| **담당파트** | 광고 관리 |
+
 ---
 
 ## 📌 Project Evolution
