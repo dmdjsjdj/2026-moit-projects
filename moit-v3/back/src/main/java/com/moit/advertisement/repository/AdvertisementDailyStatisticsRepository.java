@@ -74,4 +74,16 @@ public interface AdvertisementDailyStatisticsRepository
 	Long sumClicksByDate(
 	        @Param("statDate") LocalDate statDate
 	);
+	
+	// 파이썬&장고
+	@Query("""
+	    select s
+	    from AdvertisementDailyStatistics s
+	    join fetch s.advertisement a
+	    where s.statDate >= :startDate
+	    order by s.statDate asc, a.adId asc
+	""")
+	List<AdvertisementDailyStatistics> findAnalyticsStatistics(
+	        @Param("startDate") LocalDate startDate
+	);
 }

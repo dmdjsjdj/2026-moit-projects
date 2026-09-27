@@ -465,4 +465,4 @@ MOIT v3에서는 새로운 기능을 추가하는 것보다 **기능이 실제 �
 
 - [MOIT v1](../moit-v1/README.md)
 - [MOIT v2](../moit-v2/README.md)
-- **MOIT v3**
+- [MOIT v3](../moit-v3/README.md)

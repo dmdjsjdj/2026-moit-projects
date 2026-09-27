@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.moit.advertisement.dto.AdminAdvertisementStatDto;
+import com.moit.advertisement.dto.AdvertisementAnalyticsDto;
 import com.moit.advertisement.dto.AdvertisementChartDto;
 import com.moit.advertisement.dto.AdvertisementDto;
 import com.moit.advertisement.dto.AdvertisementImageDto;
@@ -194,4 +195,7 @@ public interface AdvertisementService {
 	        Long memberId,
 	        int days
 	);
+	
+	// 파이썬 & 장고
+	List<AdvertisementAnalyticsDto> selectAnalyticsData();
 }

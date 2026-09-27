@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { loadPaymentWidget } from '@tosspayments/payment-widget-sdk';
 import { Button, message, Spin } from 'antd';
-import { createInitialPayment, } from '../api/advertiseApi';
+import { createInitialPayment } from '../api/advertiseApi';
 
 const clientKey = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY;
 

@@ -223,7 +223,6 @@ function AdminAdvertisePage() {
     { value: '', label: '전체 유형' },
     { value: 'NEW', label: '신규 결제' },
     { value: 'EXTENSION', label: '연장 결제' },
-    { value: 'WAITING', label: '결제 대기' },
   ];
 
   const paymentSortOptions = [

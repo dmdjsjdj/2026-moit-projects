@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.moit.advertisement.dto.AdminAdvertisementStatDto;
-import com.moit.advertisement.dto.AdvertisementChartDto;
+import com.moit.advertisement.dto.AdvertisementAnalyticsDto;
 import com.moit.advertisement.dto.AdvertisementDto;
 import com.moit.advertisement.dto.AdvertisementPaymentDto;
 import com.moit.advertisement.dto.AdvertisementSearchDto;
@@ -334,5 +334,15 @@ public class AdvertisementAdminController {
         );
 
         return ResponseEntity.ok().build();
+    }
+    
+    // 파이썬 & 장고 ==========
+    @GetMapping("/analytics")
+    public ResponseEntity<List<AdvertisementAnalyticsDto>>
+            getAnalyticsData() {
+
+        return ResponseEntity.ok(
+                advertisementService.selectAnalyticsData()
+        );
     }
 }

@@ -37,13 +37,19 @@ public interface AdvertisementPaymentRepository
         join p.advertisement a 
         join p.advertiser m 
         where a.deleteYn = :deleteYn 
-          and (:searchText is null or :searchText = '' or a.title like %:searchText% or m.nickname like %:searchText%)
-          and (:status is null or :status = '' or 
-               (:status = 'NEW' and p.paymentType = com.moit.advertisement.enums.PaymentType.INITIAL
-               and p.paymentStatus = com.moit.advertisement.enums.PaymentHistoryStatus.PAID) or
-               (:status = 'EXTENSION' and p.paymentType = com.moit.advertisement.enums.PaymentType.EXTENSION
-               and p.paymentStatus = com.moit.advertisement.enums.PaymentHistoryStatus.PAID) or
-               (:status = 'WAITING' and p.paymentStatus = com.moit.advertisement.enums.PaymentHistoryStatus.REQUESTED))
+          and p.paymentStatus = com.moit.advertisement.enums.PaymentHistoryStatus.PAID
+          and (
+    		      :searchText is null 
+    		      or :searchText = '' 
+    		      or a.title like %:searchText% 
+    		      or m.nickname like %:searchText%
+		  )
+          and (
+              :status is null 
+              or :status = '' 
+              or (:status = 'NEW' and p.paymentType = com.moit.advertisement.enums.PaymentType.INITIAL) 
+              or (:status = 'EXTENSION' and p.paymentType = com.moit.advertisement.enums.PaymentType.EXTENSION)
+          )
     """)
     Page<AdvertisementPayment> findByAdvertisement_DeleteYn(
         @Param("deleteYn") Character deleteYn,
@@ -53,25 +59,37 @@ public interface AdvertisementPaymentRepository
     );
 
     @Query("""
-        select count(p) from AdvertisementPayment p 
-        join p.advertisement a 
-        join p.advertiser m 
-        where a.deleteYn = :deleteYn 
-          and (:searchText is null or :searchText = '' or a.title like %:searchText% or m.nickname like %:searchText%)
-          and (:status is null or :status = '' or 
-               (:status = 'NEW' and p.paymentType = com.moit.advertisement.enums.PaymentType.INITIAL
-	           and p.paymentStatus = com.moit.advertisement.enums.PaymentHistoryStatus.PAID) or
-               (:status = 'EXTENSION' and p.paymentType = com.moit.advertisement.enums.PaymentType.EXTENSION
-               and p.paymentStatus = com.moit.advertisement.enums.PaymentHistoryStatus.PAID) or
-               (:status = 'WAITING' and p.paymentStatus = com.moit.advertisement.enums.PaymentHistoryStatus.REQUESTED))
-    """)
-    long countByAdvertisement_DeleteYnAndSearchTextAndStatus(
-        @Param("deleteYn") Character deleteYn,
-        @Param("searchText") String searchText,
-        @Param("status") String status
-    );
+	    select count(p) from AdvertisementPayment p 
+	    join p.advertisement a 
+	    join p.advertiser m 
+	    where a.deleteYn = :deleteYn 
+	      and p.paymentStatus = com.moit.advertisement.enums.PaymentHistoryStatus.PAID
+	      and (
+	          :searchText is null 
+	          or :searchText = '' 
+	          or a.title like %:searchText% 
+	          or m.nickname like %:searchText%
+	      )
+	      and (
+	          :status is null
+	          or :status = ''
+	          or (:status = 'NEW' and p.paymentType = com.moit.advertisement.enums.PaymentType.INITIAL)
+	          or (:status = 'EXTENSION' and p.paymentType = com.moit.advertisement.enums.PaymentType.EXTENSION)
+	      )
+	""")
+	long countByAdvertisement_DeleteYnAndSearchTextAndStatus(
+	    @Param("deleteYn") Character deleteYn,
+	    @Param("searchText") String searchText,
+	    @Param("status") String status
+	);
         
     Optional<AdvertisementPayment> findTopByAdvertisement_AdIdOrderByCreatedAtDesc(Long adId);
+    
+    Optional<AdvertisementPayment>
+    findTopByAdvertisement_AdIdAndPaymentStatusOrderByCreatedAtDesc(
+            Long adId,
+            PaymentHistoryStatus paymentStatus
+    );
     
     long countByAdvertisement_DeleteYn(Character deleteYn);
     long countByAdvertisement_DeleteYnAndPaymentStatus(Character deleteYn, PaymentHistoryStatus paymentStatus);
