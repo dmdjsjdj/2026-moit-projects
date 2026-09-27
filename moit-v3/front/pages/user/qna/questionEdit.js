@@ -36,6 +36,9 @@ function questionEdit() {
   const [fileList, setFileList] = useState([]);
   const [deleteImageIds, setDeleteImageIds] = useState([]);
 
+  const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
+
   useEffect(() => {
     if (!router.isReady || !questionId) return;
 
@@ -229,7 +232,7 @@ function questionEdit() {
                     >
 
                       <a
-                        href={`http://localhost:8080${image.imagePath}`}
+                        href={`${API_BASE_URL}${image.imagePath}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         style={{

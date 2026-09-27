@@ -47,6 +47,15 @@ function questionDetail() {
   const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
 
+  const getQnaImageUrl = (imagePath) => {
+    if (!imagePath) return '';
+
+    return `${API_BASE_URL}${imagePath.replace(
+      '/images/qna/',
+      '/upload/qna/'
+    )}`;
+  };
+
   // 상세 조회
   useEffect(() => {
     if (!router.isReady || !questionId) return;
@@ -392,7 +401,7 @@ function questionDetail() {
                 >
                   📎{' '}
                   <a
-                    href={`${API_BASE_URL}${image.imagePath}`}
+                     href={getQnaImageUrl(image.imagePath)}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
