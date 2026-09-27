@@ -309,12 +309,6 @@ function MeetupDetailPage() {
         );
     }
 
-    // 광고
-    const ad = {
-        title: "Moit 특별 이벤트",
-        image: "/images/ad-banner.png",
-    };
-
     return (
         <div className="meetup-detail-page">
             {/* 목록으로 */}

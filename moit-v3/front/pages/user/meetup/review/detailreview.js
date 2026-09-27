@@ -19,7 +19,8 @@ import {
 
 const { Text, Paragraph } = Typography;
 
-const BACKEND_URL = '';
+const BACKEND_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
 
 const getImageUrl = (imgItem) => {
   if (imgItem === null || imgItem === undefined) return null;
