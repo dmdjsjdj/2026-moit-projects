@@ -80,6 +80,21 @@ public class AdminInitializer implements CommandLineRunner {
 
     @Value("${demo.partner.mobile}")
     private String demoPartnerMobile;
+
+     @Value("${demo.member2.id}")
+    private String demoMember2Id;
+
+    @Value("${demo.member2.password}")
+    private String demoMember2Password;
+
+    @Value("${demo.member2.nickname}")
+    private String demoMember2Nickname;
+
+    @Value("${demo.member2.email}")
+    private String demoMember2Email;
+
+    @Value("${demo.member2.mobile}")
+    private String demoMember2Mobile;
     
     @Override
     @Transactional // ✅ 이 파일 전체가 하나의 트랜잭션으로 묶여서 안전합니다.
@@ -120,6 +135,17 @@ public class AdminInitializer implements CommandLineRunner {
               activeStatus,
               normalReportStatus
              );
+
+       createDemoMember(
+               demoMember2Id,
+               demoMember2Password,
+               demoMember2Nickname,
+               demoMember2Email,
+               demoMember2Mobile,
+               MemberTypeEnum.ROLE_MEMBER,
+               activeStatus,
+               normalReportStatus
+       );
        
        // ========================================================= 
        // 3. 제휴업체 Demo 
