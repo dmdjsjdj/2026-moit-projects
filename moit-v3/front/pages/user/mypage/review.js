@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
-import axios from 'axios';
+import api from '../../../api/axios';
 import {
   Button,
   Card,
@@ -69,12 +69,8 @@ function UserMyReviewPage() {
   const fetchNotifications = async () => {
     if (!memberId) return;
     try {
-      const token = localStorage.getItem('accessToken');
-      const response = await axios.get('http://localhost:8080/api/notifications/reviews', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await api.get('/api/notifications/reviews');
+
       if (isMounted) {
         setNotifications(response.data);
       }
@@ -86,16 +82,8 @@ function UserMyReviewPage() {
   // 알림 클릭 시 읽음 처리 API 호출 후 리뷰 작성 페이지로 이동
   const handleNotificationClick = async (notificationId, meetupId) => {
     try {
-      const token = localStorage.getItem('accessToken'); // JWT 토큰 가져오기
-      
-      await axios.patch(
-        `http://localhost:8080/api/notifications/reviews/${notificationId}/read`,
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      await api.patch(
+        `/api/notifications/reviews/${notificationId}/read`
       );
       
       setNotifications((prev) => prev.filter((item) => item.id !== notificationId));
