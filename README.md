@@ -5,8 +5,6 @@
 하나의 프로젝트를 여러 차례 고도화하며  
 **Spring → Spring Boot → React 기반의 분리형 구조**로 발전시켰습니다.
 
-| **담당파트** | 광고 관리 |
-
 ---
 
 ## 📌 Project Evolution
@@ -16,6 +14,21 @@
 | **v1** | Spring Framework, JSP, MyBatis, MySQL, Ajax | 기본 웹 서비스 및 핵심 기능 구현 |
 | **v2** | Spring Boot, Thymeleaf, MyBatis, Oracle, Ajax, Open API | Spring Boot 기반 마이그레이션 및 기능 고도화 |
 | **v3** | Spring Boot, React, JPA, MyBatis, Oracle, JWT, Redis, Next.js, Ant Design | 프론트·백엔드 분리 및 인증·광고·결제·통계 기능 확장 |
+
+---
+
+## 👨‍💻 담당 파트
+
+**광고 관리 기능을 중심으로 프로젝트의 버전별 발전 과정에 참여했습니다.**
+
+v1에서는 기본적인 광고 등록 및 관리 기능을 구현하고,  
+v2에서는 Spring Boot 환경으로 마이그레이션하면서 기존 광고 기능을 고도화했습니다.  
+v3에서는 광고 등록부터 승인, 결제, 노출, 통계, 연장까지 광고 운영의 전체 흐름을 구현했습니다.
+
+특히 v3에서는 Toss Payments, Scheduler, Chart.js, Pandas, LLM API 등을 활용하여  
+광고 운영과 성과 분석까지 확장했습니다.
+
+> 각 버전의 상세 구현 내용과 시연 화면은 아래 발표 자료에서 확인할 수 있습니다.
 
 ---
 
