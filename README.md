@@ -68,7 +68,7 @@ MOIT 서비스의 초기 버전으로 기본적인 웹 서비스 구조를 구�
 
 📖 [Notion](https://app.notion.com/p/MoA-37195798f73380cebe19e12b11b69dad?source=copy_link)
 
-📑 [MOIT v1 발표자료](./MOIT_V1.pdf)
+📑 [MOIT v1 발표자료](./moit-v1/MOIT_V1.pdf)
 
 ---
 
@@ -101,7 +101,7 @@ Spring Boot 환경으로 전환하면서 기존 광고 기능을 새로운 프�
 
 📖 [Notion](https://app.notion.com/p/MoA-37195798f73380cebe19e12b11b69dad?source=copy_link)
 
-📑 [MOIT v2 발표자료](./MOIT_V2.pdf)
+📑 [MOIT v2 발표자료](./moit-v2/MOIT_V2.pdf)
 
 ---
 
@@ -156,7 +156,7 @@ v3에서는 광고 등록부터 운영 및 성과 분석까지 이어지는 **�
 
 📖 [Notion](https://app.notion.com/p/MoA-37195798f73380cebe19e12b11b69dad?source=copy_link)
 
-📑 [MOIT v3 발표자료](./MOIT_V3.pdf)
+📑 [MOIT v3 발표자료](./moit-v3/MOIT_V3.pdf)
 
 ---
 
@@ -222,16 +222,16 @@ React와 Spring Boot를 분리하고 REST API 기반으로 전환하면서 프�
 │
 ├── moit-v1
 │   └── README.md
+│   └── MOIT_V1.pdf
 │
 ├── moit-v2
 │   └── README.md
+│   └── MOIT_V2.pdf
 │
 ├── moit-v3
 │   └── README.md
-│
-├── MOIT_V1.pdf
-├── MOIT_V2.pdf
-└── MOIT_V3.pdf
+│   └── MOIT_V3.pdf
+└── 
 ```
 
 > **하나의 MOIT 서비스를 여러 버전에 걸쳐 발전시키면서, 광고 파트를 중심으로 기능과 기술을 단계적으로 확장한 프로젝트입니다.**
